@@ -28,7 +28,6 @@
 }
 
 .post-block a:hover {
-  color: white;
   background: var(--purple);
   transition: 0.3s;
 }
@@ -65,6 +64,10 @@ nav {
   background: var(--purple);
   border-radius: 10px;
   transition: 0.5s;
+}
+
+#login-container {
+  background: var(--turqoise-purple);
 }
 
 article {

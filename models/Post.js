@@ -1,30 +1,42 @@
-// Import the necessary models
-const User = require("./User");
-const Post = require("./Post");
-const Comment = require("./Comment");
-// Define the relationships between the models
-User.hasMany(Post, {
-  foreignKey: "user_id", // Set up the foreign key relationship
-});
+const { Model, DataTypes } = require("sequelize");
+const sequelize = require("../config/connection");
 
-Post.belongsTo(User, {
-  foreignKey: "user_id", // Set up the foreign key relationship
-});
+class Post extends Model {}
 
-Comment.belongsTo(User, {
-  foreignKey: "user_id", // Set up the foreign key relationship
-});
+Post.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    content: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+      validate: {
+        len: [1],
+      },
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: "user",
+        key: "id",
+      },
+    },
+  },
+  {
+    sequelize,
+    timestamps: true,
+    freezeTableName: true,
+    underscored: true,
+    modelName: "post",
+  }
+);
 
-Comment.belongsTo(Post, {
-  foreignKey: "post_id", // Set up the foreign key relationship
-});
-
-Post.hasMany(Comment, {
-  foreignKey: "post_id", // Set up the foreign key relationship
-});
-
-User.hasMany(Comment, {
-  foreignKey: "user_id", // Set up the foreign key relationship
-});
-// Export the models
-module.exports = { User, Post, Comment };
+module.exports = Post;
