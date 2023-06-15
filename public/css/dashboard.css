@@ -1,0 +1,82 @@
+:root {
+  --turqoise-purple: linear-gradient(
+    45deg,
+    hsla(168, 85%, 52%, 0.5),
+    hsla(263, 88%, 45%, 0.5) 100%
+  );
+  --title-color: #19c8c8d7;
+  --purple: rgb(100, 12, 124);
+}
+
+.post-container {
+  padding: 10px;
+  border-radius: 0.5em;
+  background: var(--turqoise-purple);
+}
+
+.post-container:hover {
+  border-right: 10px solid var(--title-color);
+  transition: 0.4s;
+}
+
+.card-header {
+  background: var(--turqoise-purple);
+}
+
+.post-block a {
+  color: var(--purple);
+}
+
+.post-block a:hover {
+  color: white;
+  background: var(--purple);
+  transition: 0.3s;
+}
+
+body {
+  background-image: url("../images/stackBlogger-Background.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: gray;
+}
+
+.card-body {
+  background: var(--purple);
+}
+
+.post-user {
+  background: var(--purple);
+}
+
+.title-text {
+  color: var(--purple);
+}
+
+.comment {
+  background: var(--turqoise-purple);
+}
+
+nav {
+  background: var(--turqoise-purple);
+}
+
+.nav-item:hover {
+  background: var(--purple);
+  border-radius: 10px;
+  transition: 0.5s;
+}
+
+article {
+  background: var(--turqoise-purple);
+}
+
+article h1 {
+  background: var(--purple);
+}
+
+footer {
+  position: "fixed";
+  bottom: 0;
+  width: 100%;
+}
