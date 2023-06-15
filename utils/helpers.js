@@ -1,13 +1,14 @@
-// Middleware function to check if user is logged in
-const withAuth = (req, res, next) => {
-  // If user is not logged in, redirect to login page
-  if (!req.session.logged_in) {
-    res.redirect("/login");
-  } else {
-    // If user is logged in, continue to next middleware or route
-    next();
-  }
-};
+module.exports = {
+  format_date: (date) => {
+    // Format date and time information to MM/DD/YYYY HH:mm
+    const d = new Date(date);
+    const formattedDate = `${
+      d.getMonth() + 1
+    }/${d.getDate()}/${d.getFullYear()}`;
+    const hours = d.getHours().toString().padStart(2, "0");
+    const minutes = d.getMinutes().toString().padStart(2, "0");
+    const formattedTime = `${hours}:${minutes}`;
 
-// Exporting withAuth middleware function
-module.exports = withAuth;
+    return `${formattedDate} at ${formattedTime}`;
+  },
+};
