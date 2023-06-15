@@ -1,85 +1,85 @@
-// Import necessary modules
 const router = require("express").Router();
-const { User } = require("../../models");
-
-// Route to get all users
-router.get("/", (req, res) => {
-  User.findAll({
-    attributes: { exclude: ["password"] },
-  })
-    .then((dbUserData) => res.json(dbUserData))
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json(err);
-    });
-});
-// Route to sign up a new user
-router.post("/signup", async (req, res) => {
+const { Post, User, Comment } = require("../../models");
+const withAuth = require("../../utils/auth");
+// Get all posts with associated username
+router.get("/", async (req, res) => {
   try {
-    const newUser = new User();
-    newUser.username = req.body.username;
-    newUser.email = req.body.email;
-    newUser.password = req.body.password;
-
-    const userData = await newUser.save();
-
-    req.session.save(() => {
-      req.session.user_id = userData.id;
-      req.session.logged_in = true;
-
-      res.status(200).json(userData);
+    const postData = await Post.findAll({
+      include: [{ model: User, attributes: ["username"] }],
     });
+    res.status(200).json(postData);
   } catch (err) {
-    res.status(400).json(err);
-    console.log(err);
+    res.status(500).json(err);
   }
 });
-// Route to log in a user
-router.post("/login", async (req, res) => {
+// Get one post by ID with associated username and comments
+router.get("/:id", async (req, res) => {
   try {
-    const userData = await User.findOne({
-      where: { username: req.body.username },
+    const postData = await Post.findByPk(req.params.id, {
+      include: [
+        { model: User, attributes: ["username"] },
+        {
+          model: Comment,
+          include: [{ model: User, attributes: ["username"] }],
+        },
+      ],
     });
-    // const emailData = await User.findOne({
-    //   where: { username: req.body.email },
-    // });
-
-    if (!userData) {
-      res
-        .status(400)
-        .json({ message: "Incorrect email or password, please try again" });
+    if (!postData) {
+      res.status(404).json({ message: "No post found with that id!" });
       return;
     }
-
-    const validPassword = await userData.checkPassword(req.body.password);
-
-    if (!validPassword) {
-      res
-        .status(400)
-        .json({ message: "Incorrect username or password, please try again" });
-      return;
-    }
-
-    req.session.save(() => {
-      req.session.user_id = userData.id;
-      req.session.logged_in = true;
-
-      res
-        .status(200)
-        .json({ user: userData, message: "You are now logged in!" });
+    res.status(200).json(postData);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+// Create a new post with authenticated user
+router.post("/", withAuth, async (req, res) => {
+  try {
+    const newPost = await Post.create({
+      ...req.body,
+      user_id: req.session.user_id,
     });
+    res.status(200).json(newPost);
   } catch (err) {
     res.status(400).json(err);
   }
 });
-// Route to log out a user
-router.post("/logout", (req, res) => {
-  if (req.session.logged_in) {
-    req.session.destroy(() => {
-      res.status(204).end();
+// Update an existing post with authenticated user
+router.put("/:id", withAuth, async (req, res) => {
+  try {
+    const updatedPost = await Post.update(req.body, {
+      where: { id: req.params.id },
     });
-  } else {
-    res.status(404).end();
+
+    if (!updatedPost) {
+      res.status(404).json({ message: "No post found with that id!" });
+      return;
+    }
+    res.status(200).json(updatedPost);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+// Delete a post with authenticated user
+router.delete("/:id", withAuth, async (req, res) => {
+  try {
+    // Delete all comments related to the post
+    await Comment.destroy({
+      where: { post_id: req.params.id },
+    });
+
+    const deletedPost = await Post.destroy({
+      where: { id: req.params.id },
+    });
+
+    if (!deletedPost) {
+      res.status(404).json({ message: "No post found with that id!" });
+      return;
+    }
+    res.status(200).json(deletedPost);
+  } catch (err) {
+    res.status(500).json(err);
   }
 });
 // Export the router
