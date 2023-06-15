@@ -1,0 +1,2 @@
+DROP DATABASE IF EXISTS stackBlogger;
+CREATE DATABASE stackBlogger;
