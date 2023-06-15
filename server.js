@@ -33,14 +33,14 @@ app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
 
 // Using session middleware again with a different session object
-app.use(
-  session({
-    secret: process.env.SECRET,
-    store: new SequelizeStore({ db: sequelize }),
-    resave: false,
-    saveUninitialized: false,
-  })
-);
+// app.use(
+//   session({
+//     secret: process.env.SECRET,
+//     store: new SequelizeStore({ db: sequelize }),
+//     resave: false,
+//     saveUninitialized: false,
+//   })
+// );
 // Using routes from controller
 app.use(routes);
 // Syncing sequelize models with database and starting server
