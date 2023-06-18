@@ -61,6 +61,12 @@ Frontend:
   Database:
 - MySQL
 
+## Heroku
+
+Click the link below to view the website on Heroku!
+
+- https://powerful-plateau-11092-534c2d3bf063.herokuapp.com/
+
 ## Credits
 
 stockBlogger was developed by Leandro Mangubat.
